@@ -1,0 +1,54 @@
+# Import socket module
+import socket            
+ 
+# Create a socket object
+s = socket.socket()        
+ 
+# Define the port on which you want to connect
+port = 12345               
+ 
+# connect to the server on local computer
+s.connect(('127.0.0.1', port))
+ 
+
+print("RSA Client Side \n")
+p=int(input("Enter p(prime number) "))
+q=int(input("Enter q(prime number) "))
+n=p*q
+print("First part of public key is :n= ", n)
+
+a=(p-1)*(q-1)
+print("Euler Totient function is : a = ", a)
+
+e=int(input("Enter exponent e value such that 1<e<TF and is coprime: "))
+print("Public key is n= , e= \n", (n,e))
+
+s.sendall(str.encode("\n".join([str(n), str(e)])))
+
+M=int((s.recv(2048)).decode('utf-8'))
+print("Recieved encrypted message is = ",M)
+
+
+r=0;
+d=2;
+while d<a:
+    if (d*e)%a==1:
+       r=1
+       break
+    d=d+1
+    
+        
+
+if r == 1:
+    d = int(d)
+    print("decryption key is: ", d)
+     
+else:
+    print("Multiplicative inverse for\
+    the given encryption key does not \
+    exist. Choose a different encryption key ")
+#M=19070
+S=(M**d)%n
+print("Decrypted Message is= ",S)
+s.sendall(str.encode("\n".join([str(M),str(S)])))
+s.close()
